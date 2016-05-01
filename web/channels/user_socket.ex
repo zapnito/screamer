@@ -3,6 +3,7 @@ defmodule Screamer.UserSocket do
 
   ## Channels
   # channel "rooms:*", Screamer.RoomChannel
+  channel "conversations:*", Screamer.ConversationChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket
