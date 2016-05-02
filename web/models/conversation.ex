@@ -1,16 +1,15 @@
-defmodule Screamer.Message do
+defmodule Screamer.Conversation do
   use Screamer.Web, :model
 
   @primary_key {:id, :binary_id, autogenerate: false}
   @foreign_key_type :binary_id
-  schema "messages" do
-    field :body, :string
-    belongs_to :conversation, Screamer.Conversation
-
+  schema "conversations" do
+    field :name, :string
+    has_many :messages, Screamer.Message
     timestamps
   end
 
-  @required_fields ~w(id body)
+  @required_fields ~w(id name)
   @optional_fields ~w()
 
   @doc """

@@ -1,28 +1,36 @@
+require IEx
 defmodule Screamer.ConversationChannelTest do
   use Screamer.ChannelCase
 
   alias Screamer.ConversationChannel
+  alias Screamer.Conversation
 
   setup do
-    {:ok, _, socket} =
-      socket("user_id", %{some: :assign})
-      |> subscribe_and_join(ConversationChannel, "conversations:lobby")
-
-    {:ok, socket: socket}
+    {:ok, conversation} = Repo.insert Conversation.changeset(%Conversation{}, %{id: Ecto.UUID.generate, name: "Lobby"})
+    {:ok, message} = Repo.insert build_assoc(conversation, :messages, id: Ecto.UUID.generate, body: "Hello world")
+    {:ok, socket} = connect(Screamer.UserSocket, %{})
+    {:ok, socket: socket, conversation: conversation, message: message}
   end
 
-  test "ping replies with status ok", %{socket: socket} do
-    ref = push socket, "ping", %{"hello" => "there"}
-    assert_reply ref, :ok, %{"hello" => "there"}
+  # test "ping replies with status ok", %{socket: socket} do
+  #   ref = push socket, "ping", %{"hello" => "there"}
+  #   assert_reply ref, :ok, %{"hello" => "there"}
+  # end
+
+  # test "shout broadcasts to conversations:lobby", %{socket: socket} do
+  #   push socket, "shout", %{"hello" => "all"}
+  #   assert_broadcast "shout", %{"hello" => "all"}
+  # end
+
+  test "join", %{socket: socket, conversation: conversation, message: message} do
+    {:ok, json, _} = socket |> subscribe_and_join(ConversationChannel, "conversations:#{conversation.id}")
+    assert message.id == List.first(json).id
   end
 
-  test "shout broadcasts to conversations:lobby", %{socket: socket} do
-    push socket, "shout", %{"hello" => "all"}
-    assert_broadcast "shout", %{"hello" => "all"}
-  end
+  # test "broadcasts are pushed to the client", %{socket: socket, conversation: conversation} do
+  #   {:ok, _, _} = socket |> subscribe_and_join(ConversationChannel, "conversations:#{conversation.id}")
 
-  test "broadcasts are pushed to the client", %{socket: socket} do
-    broadcast_from! socket, "broadcast", %{"some" => "data"}
-    assert_push "broadcast", %{"some" => "data"}
-  end
+  #   broadcast_from! socket, "broadcast", %{"some" => "data"}
+  #   assert_push "broadcast", %{"some" => "data"}
+  # end
 end

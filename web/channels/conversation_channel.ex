@@ -1,11 +1,20 @@
+require IEx
+
 defmodule Screamer.ConversationChannel do
   use Screamer.Web, :channel
+  alias Screamer.Conversation
   alias Screamer.Message
+  alias Screamer.MessageView
+  import Ecto.Query
 
   def join("conversations:" <> conversation_id, payload, socket) do
     if authorized?(payload) do
-      messages = Repo.all Message
-      {:ok, messages, socket}
+      messages = Message
+      |> where(conversation_id: ^conversation_id)
+      |> Repo.all
+
+      messages_json = Phoenix.View.render(MessageView, "index.json", %{messages: messages})
+      {:ok, messages_json, assign(socket, :conversation_id, conversation_id)}
     else
       {:error, %{reason: "unauthorized"}}
     end
@@ -25,11 +34,15 @@ defmodule Screamer.ConversationChannel do
   # end
 
   def handle_in("addMessage", message, socket) do
-    changeset = Message.changeset(%Message{}, message)
+    conversation_id = socket.assigns.conversation_id
+    conversation = Repo.get! Conversation, conversation_id
+    changeset = build_assoc(conversation, :messages) |> Message.changeset(message)
+
     case Repo.insert(changeset) do
       {:ok, message} ->
-        broadcast socket, "addMessage", message
-        {:reply, {:ok, message}, socket}
+        message_json = Phoenix.View.render(MessageView, "show.json", %{message: message})
+        broadcast socket, "addMessage", message_json
+        {:reply, {:ok, message_json}, socket}
       {:error, changeset} ->
         {:reply, {:error, %{errors: changeset}}, socket}
     end
