@@ -1,9 +1,11 @@
 defmodule Screamer.ConversationChannel do
   use Screamer.Web, :channel
+  alias Screamer.Message
 
-  def join("conversations:" <> conversation_id, _payload, socket) do
-    if authorized?(_payload) do
-      {:ok, socket}
+  def join("conversations:" <> conversation_id, payload, socket) do
+    if authorized?(payload) do
+      messages = Repo.all Message
+      {:ok, messages, socket}
     else
       {:error, %{reason: "unauthorized"}}
     end
@@ -22,9 +24,15 @@ defmodule Screamer.ConversationChannel do
   #   {:noreply, socket}
   # end
 
-  def handle_in("addMessage", payload, socket) do
-    broadcast socket, "addMessage", payload
-    {:reply, {:ok, payload}, socket}
+  def handle_in("addMessage", message, socket) do
+    changeset = Message.changeset(%Message{}, message)
+    case Repo.insert(changeset) do
+      {:ok, message} ->
+        broadcast socket, "addMessage", message
+        {:reply, {:ok, message}, socket}
+      {:error, changeset} ->
+        {:reply, {:error, %{errors: changeset}}, socket}
+    end
   end
 
   # This is invoked every time a notification is being broadcast
