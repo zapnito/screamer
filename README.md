@@ -8,6 +8,7 @@ A phoenix server to power your site's realtime feeds and conversations.
 
   * Install dependencies with `$ mix deps.get`
   * Create and migrate your database with `$ mix ecto.create && mix ecto.migrate`
+  * Add seed data `$ mix db.seed`
   * Start screamer with `$ mix phoenix.server`
 
 Your screamer server is now running at http://localhost:4000. This is only the backend server, for the frontend head over to http://github.com/zapnito/ember-screamer.
