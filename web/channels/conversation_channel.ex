@@ -4,8 +4,18 @@ defmodule Screamer.ConversationChannel do
   use Screamer.Web, :channel
   alias Screamer.Conversation
   alias Screamer.Message
+  alias Screamer.ConversationView
   alias Screamer.MessageView
   import Ecto.Query
+
+  def join("conversations:index", payload, socket) do
+    if authorized?(payload) do
+      conversations = Repo.all Conversation
+
+      conversations_json = Phoenix.View.render(ConversationView, "index.json", %{conversations: conversations})
+      {:ok, conversations_json, socket}
+    end
+  end
 
   def join("conversations:" <> conversation_id, payload, socket) do
     if authorized?(payload) do
@@ -43,6 +53,17 @@ defmodule Screamer.ConversationChannel do
         message_json = Phoenix.View.render(MessageView, "show.json", %{message: message})
         broadcast socket, "addMessage", message_json
         {:reply, {:ok, message_json}, socket}
+      {:error, changeset} ->
+        {:reply, {:error, %{errors: changeset}}, socket}
+    end
+  end
+
+  def handle_in("addConversation", conversation, socket) do
+    case Repo.insert Conversation.changeset(%Conversation{}, conversation) do
+      {:ok, conversation} ->
+        conversation_json = Phoenix.View.render(ConversationView, "show.json", %{conversation: conversation})
+        broadcast socket, "addConversation", conversation_json
+        {:reply, {:ok, conversation_json}, socket}
       {:error, changeset} ->
         {:reply, {:error, %{errors: changeset}}, socket}
     end

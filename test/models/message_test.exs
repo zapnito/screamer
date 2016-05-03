@@ -2,8 +2,9 @@ defmodule Screamer.MessageTest do
   use Screamer.ModelCase
 
   alias Screamer.Message
+  alias Ecto.UUID
 
-  @valid_attrs %{body: "some content"}
+  @valid_attrs %{id: UUID.generate, body: "some content"}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do
