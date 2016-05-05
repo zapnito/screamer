@@ -2,7 +2,7 @@
 
 ## Introduction
 
-A phoenix server to power your site's realtime feeds and conversations.
+A Phoenix server to power your site's realtime feeds and conversations.
 
 ## Getting started
 
