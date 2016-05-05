@@ -6,3 +6,4 @@ otp_release:
 script:
   - mix compile --warnings-as-errors
   - mix dogma
+  - MIX_ENV=test mix coveralls.travis
