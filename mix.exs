@@ -10,7 +10,13 @@ defmodule Screamer.Mixfile do
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      aliases: aliases,
-     deps: deps]
+     deps: deps,
+     test_coverage: [tool: ExCoveralls],
+     preferred_cli_env: [
+      "coveralls": :test,
+      "coveralls.detail": :test,
+      "coveralls.post": :test,
+      "coveralls.html": :test]]
   end
 
   # Configuration for the OTP application.
@@ -35,7 +41,8 @@ defmodule Screamer.Mixfile do
      {:phoenix_ecto, "~> 2.0"},
      {:gettext, "~> 0.9"},
      {:cowboy, "~> 1.0"},
-     {:dogma, "~> 0.1", only: :dev}]
+     {:dogma, "~> 0.1", only: :dev},
+     {:excoveralls, "~> 0.5", only: :test}]
   end
 
   # Aliases are shortcut or tasks specific to the current project.
