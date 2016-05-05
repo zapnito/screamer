@@ -2,7 +2,7 @@
 
 ## Introduction
 
-A phoenix server to power your site's realtime feeds and conversations.
+A Phoenix server to power your site's realtime feeds and conversations.
 
 ## Getting started
 
@@ -17,7 +17,7 @@ Your screamer server is now running at http://localhost:4000. This is only the b
 
 Any contributions are very welcome. This project is partly to help people learn how to use Elixir/Phoenix, if you open a PR we'll help you with any questions you have regarding implementation, common idioms etc.
 
-See [contributing guidelines](contributing.md) for more information.
+See [contributing guidelines](CONTRIBUTING.md) for more information.
 
 ## Credits
 
