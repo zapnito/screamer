@@ -5,5 +5,4 @@ otp_release:
   - 18.3
 script:
   - mix compile --warnings-as-errors
-  - mix test
   - mix dogma
