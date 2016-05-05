@@ -1,4 +1,4 @@
-# Screamer [![Build Status](https://travis-ci.org/zapnito/screamer.svg?branch=master)](https://travis-ci.org/zapnito/screamer) [![Coverage Status](https://coveralls.io/repos/github/zapnito/screamer/badge.svg?branch=master)](https://coveralls.io/github/zapnito/screamer?branch=master)
+# Screamer [![Build Status](https://travis-ci.org/zapnito/screamer.svg?branch=master)](https://travis-ci.org/zapnito/screamer) [![Coverage Status](https://coveralls.io/repos/github/zapnito/screamer/badge.svg)](https://coveralls.io/github/zapnito/screamer?branch=master)
 
 ## Introduction
 
