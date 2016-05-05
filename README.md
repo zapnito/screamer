@@ -1,4 +1,4 @@
-# Screamer
+# Screamer [![Coverage Status](https://coveralls.io/repos/github/zapnito/screamer/badge.svg?branch=master)](https://coveralls.io/github/zapnito/screamer?branch=master)
 
 ## Introduction
 
