@@ -6,8 +6,23 @@ defmodule Screamer.ConversationChannelTest do
   alias Screamer.Conversation
 
   setup do
-    {:ok, conversation} = Repo.insert Conversation.changeset(%Conversation{}, %{id: Ecto.UUID.generate, name: "Lobby"})
-    {:ok, message} = Repo.insert build_assoc(conversation, :messages, id: Ecto.UUID.generate, body: "Hello world")
+    conversation_changeset = Conversation.changeset(
+      %Conversation{}, %{
+        id: Ecto.UUID.generate,
+        name: "Lobby"
+      }
+    )
+
+    {:ok, conversation} = Repo.insert conversation_changeset
+
+    message_changeset = build_assoc(
+      conversation,
+      :messages,
+      id: Ecto.UUID.generate,
+      body: "Hello world"
+    )
+
+    {:ok, message} = Repo.insert message_changeset
     {:ok, socket} = connect(Screamer.UserSocket, %{})
     {:ok, socket: socket, conversation: conversation, message: message}
   end
@@ -23,7 +38,9 @@ defmodule Screamer.ConversationChannelTest do
   # end
 
   test "join", %{socket: socket, conversation: conversation, message: message} do
-    {:ok, json, _} = socket |> subscribe_and_join(ConversationChannel, "conversations:#{conversation.id}")
+    {:ok, json, _} =
+      socket
+      |> subscribe_and_join(ConversationChannel, "conversations:#{conversation.id}")
     assert message.id == List.first(json).id
   end
 
